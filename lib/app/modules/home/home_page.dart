@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:rx_notifier/rx_notifier.dart';
 
 import '../../shared/widgets/header_widget.dart';
+import 'home_controller.dart';
+import 'models/todo_model.dart';
 
 class HomePage extends StatefulWidget {
   static final String route = '/home';
@@ -16,6 +20,14 @@ class _HomePageState extends State<HomePage> {
     color: Colors.white,
   );
 
+  final HomeController _home$ = Modular.get<HomeController>();
+
+  @override
+  void initState() {
+    _home$.getAllTodos();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final Color primaryColor = Theme.of(context).primaryColor;
@@ -30,17 +42,27 @@ class _HomePageState extends State<HomePage> {
               HeaderWidget(
                 backgroundColor: primaryColor,
                 height: screenHeight * .2,
-                child: buildHeader(),
+                child: buildHeader(_home$.name),
               ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: buildTodosList([]),
+                  child: RxBuilder(
+                    builder: (_) {
+                      if (_home$.allTodos.value == null) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else {
+                        return buildTodosList(_home$.allTodos.value);
+                      }
+                    },
+                  ),
                 ),
               ),
             ],
           ),
-          buildLogoutButton(context),
+          buildLogoutButton(context, _home$.logout),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -72,12 +94,14 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildModalBottomSheet(BuildContext context) {
     return Form(
-      key: null,
+      key: _home$.formKey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 10.0),
           TextFormField(
+            controller: _home$.description$,
+            validator: _home$.descriptionValidation,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Descrição',
@@ -87,14 +111,19 @@ class _HomePageState extends State<HomePage> {
           Container(
             width: double.infinity,
             child: OutlinedButton(
-              onPressed: () {},
+              onPressed: () {
+                Modular.to.pop();
+              },
               child: Text('Cancelar'),
             ),
           ),
           Container(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                await _home$.addTodo();
+                Modular.to.pop();
+              },
               child: Text('Confirmar'),
             ),
           ),
@@ -103,41 +132,48 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildLogoutButton(BuildContext context) {
+  Widget buildLogoutButton(BuildContext context, Function onPressed) {
     return Positioned(
       right: 0.0,
       top: MediaQuery.of(context).padding.top,
       child: IconButton(
         icon: Icon(Icons.logout),
         color: Colors.white,
-        onPressed: () {},
+        onPressed: onPressed,
       ),
     );
   }
 
-  Widget buildTodosList(List todos) {
+  Widget buildTodosList(List<TodoModel> todos) {
     return ListView.separated(
       separatorBuilder: (_, __) => Divider(),
       itemCount: todos.length,
       itemBuilder: (context, index) {
+        final TodoModel currentTodo = todos[index];
+
         return CheckboxListTile(
           controlAffinity: ListTileControlAffinity.leading,
           contentPadding: const EdgeInsets.only(right: 16.0),
           title: Text(
-            'Descrição vem aqui',
+            currentTodo.description,
             style: TextStyle(
               color: Colors.black,
               decoration: null,
             ),
           ),
-          value: false,
-          onChanged: (value) => {},
+          value: currentTodo.isCompleted,
+          onChanged: (value) async {
+            final TodoModel updatedTodo = currentTodo.copyWith(
+              isCompleted: value,
+            );
+            await _home$.updateTodo(updatedTodo);
+          },
         );
       },
     );
   }
 
-  Widget buildHeader() {
+  Widget buildHeader(String name) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,7 +183,7 @@ class _HomePageState extends State<HomePage> {
           style: headerStyle,
         ),
         Text(
-          'John Doe!',
+          '$name!',
           style: headerStyle.copyWith(
             fontSize: 44.0,
             fontWeight: FontWeight.w800,

@@ -2,6 +2,7 @@
     package="br.com.bmsrangel.dev.mobile">
    <application
         android:label="mobile"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:rx_notifier/rx_notifier.dart';
 
-import '../../shared/mixins/loader_mixin.dart';
 import '../../shared/widgets/header_widget.dart';
+import 'login_controller.dart';
 import 'widgets/custom_form_field.dart';
 
 class LoginPage extends StatefulWidget {
   static final String route = '/login';
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   Color primaryColor;
+
+  final LoginController _login$ = Modular.get<LoginController>();
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +42,17 @@ class _LoginPageState extends State<LoginPage> {
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Form(
-                key: null,
+                key: _login$.formKey,
                 child: ListView(
                   children: [
                     buildEmailField(),
                     const SizedBox(height: 20.0),
-                    buildPasswordField(),
+                    RxBuilder(
+                      builder: (_) => buildPasswordField(
+                        showHidePassword: _login$.showHidePassword.value,
+                        onSuffixIconPressed: _login$.setShowHidePassword,
+                      ),
+                    ),
                     const SizedBox(height: 20.0),
                     buildLoginButton(context),
                     const SizedBox(height: 20.0),
@@ -79,27 +88,31 @@ class _LoginPageState extends State<LoginPage> {
       height: 50.0,
       child: ElevatedButton(
         child: Text('Entrar'),
-        onPressed: () {},
+        onPressed: _login$.login,
       ),
     );
   }
 
-  Widget buildPasswordField() {
+  Widget buildPasswordField(
+      {bool showHidePassword, Function onSuffixIconPressed}) {
     return CustomFormField(
+      controller: _login$.password$,
       cursorColor: primaryColor,
-      validationFunction: (value) => {},
+      validationFunction: _login$.passwordValidation,
       labelText: 'Password',
-      obscureText: true,
-      suffixIcon: Icons.visibility,
-      onSuffixIconPressed: () {},
+      obscureText: showHidePassword,
+      suffixIcon: showHidePassword ? Icons.visibility : Icons.visibility_off,
+      onSuffixIconPressed: onSuffixIconPressed,
     );
   }
 
   Widget buildEmailField() {
     return CustomFormField(
+      controller: _login$.email$,
       cursorColor: primaryColor,
       keyboardType: TextInputType.emailAddress,
-      validationFunction: (value) => {},
+      // validationFunction: (email) => _login$.emailValidation(email),
+      validationFunction: _login$.emailValidation,
       labelText: 'E-mail',
     );
   }
