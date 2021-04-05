@@ -15,26 +15,6 @@ class LoginController {
 
   final RxNotifier<bool> showHidePassword = RxNotifier<bool>(true);
 
-  String emailValidation(String email) {
-    if (email.isEmpty) {
-      return 'E-mail é obrigatório';
-    } else if (!email.contains('@')) {
-      return 'Formato de e-mail inválido';
-    } else {
-      return null;
-    }
-  }
-
-  String passwordValidation(String password) {
-    if (password.isEmpty) {
-      return 'A senha é obrigatória';
-    } else if (password.length < 6) {
-      return 'A senha precisa de no mínimo 6 caracteres';
-    } else {
-      return null;
-    }
-  }
-
   void setShowHidePassword() {
     showHidePassword.value = !showHidePassword.value;
   }

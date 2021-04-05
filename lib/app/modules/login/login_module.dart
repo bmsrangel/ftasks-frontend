@@ -1,12 +1,15 @@
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobile/app/modules/login/login_controller.dart';
 import 'package:mobile/app/modules/login/login_page.dart';
+import 'package:mobile/app/modules/login/pages/register_controller.dart';
+import 'package:mobile/app/modules/login/pages/register_page.dart';
 import 'package:mobile/app/shared/auth/auth_controller.dart';
 
 class LoginModule extends Module {
   @override
   final List<Bind> binds = [
     Bind.lazySingleton((i) => LoginController(i.get<AuthController>())),
+    Bind.factory((i) => RegisterController(i.get<AuthController>())),
   ];
 
   @override
@@ -14,6 +17,10 @@ class LoginModule extends Module {
     ChildRoute(
       Modular.initialRoute,
       child: (context, args) => LoginPage(),
-    )
+    ),
+    ChildRoute(
+      RegisterPage.route,
+      child: (context, args) => RegisterPage(),
+    ),
   ];
 }

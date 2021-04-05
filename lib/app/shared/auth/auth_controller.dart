@@ -1,3 +1,4 @@
+import 'package:mobile/app/shared/auth/models/user_dto.dart';
 import 'package:mobile/app/shared/auth/repositories/auth_repository.dart';
 import 'package:mobile/app/shared/models/user_model.dart';
 import 'package:mobile/app/shared/services/user_local_storage_service.dart';
@@ -28,10 +29,12 @@ class AuthController {
     }
   }
 
-  logout() async {
+  Future<void> logout() async {
     user = null;
     await _storageService.clearUserData();
   }
 
-  register() async {}
+  Future<void> register(UserDto userData) async {
+    await _authRepository.register(userData);
+  }
 }

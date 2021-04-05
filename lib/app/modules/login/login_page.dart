@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile/app/modules/login/pages/register_page.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 
 import '../../shared/widgets/header_widget.dart';
 import 'login_controller.dart';
 import 'widgets/custom_form_field.dart';
+import '../../shared/utils/validator.dart';
 
 class LoginPage extends StatefulWidget {
   static final String route = '/login';
@@ -30,12 +33,13 @@ class _LoginPageState extends State<LoginPage> {
             backgroundColor: primaryColor,
             height: screenHeight * .15,
             child: Text(
-              'Bem-vindo ao F-Tasks',
-              style: TextStyle(
+              'Bem-vindo ao F-Tasks!',
+              style: GoogleFonts.righteous(
+                  textStyle: TextStyle(
                 fontSize: 28.0,
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
-              ),
+              )),
             ),
           ),
           Expanded(
@@ -76,7 +80,9 @@ class _LoginPageState extends State<LoginPage> {
         child: Text(
           'Registrar',
         ),
-        onPressed: () {},
+        onPressed: () {
+          Modular.to.pushNamed(RegisterPage.route);
+        },
       ),
     );
   }
@@ -98,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
     return CustomFormField(
       controller: _login$.password$,
       cursorColor: primaryColor,
-      validationFunction: _login$.passwordValidation,
+      validationFunction: Validator.passwordValidation,
       labelText: 'Password',
       obscureText: showHidePassword,
       suffixIcon: showHidePassword ? Icons.visibility : Icons.visibility_off,
@@ -112,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
       cursorColor: primaryColor,
       keyboardType: TextInputType.emailAddress,
       // validationFunction: (email) => _login$.emailValidation(email),
-      validationFunction: _login$.emailValidation,
+      validationFunction: Validator.emailValidation,
       labelText: 'E-mail',
     );
   }

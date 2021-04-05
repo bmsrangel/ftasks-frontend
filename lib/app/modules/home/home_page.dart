@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 
 import '../../shared/widgets/header_widget.dart';
@@ -14,11 +15,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final TextStyle headerStyle = TextStyle(
+  final TextStyle headerStyle = GoogleFonts.righteous(
+      textStyle: TextStyle(
     fontSize: 24.0,
     fontWeight: FontWeight.w500,
     color: Colors.white,
-  );
+  ));
 
   final HomeController _home$ = Modular.get<HomeController>();
 
