@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/app/modules/login/pages/register_page.dart';
+import 'package:mobile/app/shared/mixins/loader_mixin.dart';
+import 'package:mobile/app/shared/mixins/messages_mixin.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 
 import '../../shared/widgets/header_widget.dart';
@@ -16,10 +18,21 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> with LoaderMixin, MessagesMixin {
   Color primaryColor;
 
   final LoginController _login$ = Modular.get<LoginController>();
+
+  @override
+  void initState() {
+    rxObserver(() {
+      showHideLoaderHelper(context, _login$.isLoading.value);
+      if (_login$.error.value != null) {
+        showError(message: _login$.error.value, context: context);
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

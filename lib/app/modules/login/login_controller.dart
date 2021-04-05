@@ -14,6 +14,8 @@ class LoginController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   final RxNotifier<bool> showHidePassword = RxNotifier<bool>(true);
+  final RxNotifier<bool> isLoading = RxNotifier<bool>(false);
+  final RxNotifier<String> error = RxNotifier<String>(null);
 
   void setShowHidePassword() {
     showHidePassword.value = !showHidePassword.value;
@@ -21,10 +23,16 @@ class LoginController {
 
   Future<void> login() async {
     try {
+      error.value = null;
+      isLoading.value = true;
       if (formKey.currentState.validate()) {
         await _auth$.login(email$.text, password$.text);
+        isLoading.value = false;
         Modular.to.navigate(HomePage.route, replaceAll: true);
       }
-    } catch (e) {}
+    } catch (e) {
+      isLoading.value = false;
+      error.value = "Falha na autenticação";
+    }
   }
 }

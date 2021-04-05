@@ -5,13 +5,13 @@ abstract class LoaderMixin {
 
   showHideLoaderHelper(BuildContext context, bool conditional) {
     if (conditional) {
-      showLoader(context);
+      _showLoader(context);
     } else {
-      hideLoader(context);
+      _hideLoader(context);
     }
   }
 
-  showLoader(BuildContext context) {
+  _showLoader(BuildContext context) {
     if (context == null) return null;
     if (!loaderOpen) {
       loaderOpen = true;
@@ -34,7 +34,7 @@ abstract class LoaderMixin {
     }
   }
 
-  hideLoader(BuildContext context) {
+  _hideLoader(BuildContext context) {
     if (context != null && loaderOpen) {
       loaderOpen = false;
       Navigator.of(context).pop();
