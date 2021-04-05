@@ -10,8 +10,8 @@ import '../widgets/custom_form_field.dart';
 
 class RegisterPage extends StatefulWidget {
   static final String route = 'register';
-  final String title;
-  const RegisterPage({Key key, this.title = "RegisterPage"}) : super(key: key);
+
+  const RegisterPage({Key key}) : super(key: key);
   @override
   RegisterPageState createState() => RegisterPageState();
 }
@@ -75,7 +75,8 @@ class RegisterPageState extends State<RegisterPage> {
       backgroundColor: primaryColor,
       child: Text(
         'Registro de usuário',
-        style: GoogleFonts.righteous(textStyle: TextStyle(
+        style: GoogleFonts.righteous(
+            textStyle: TextStyle(
           fontSize: 32.0,
           color: Colors.white,
           fontWeight: FontWeight.w600,
