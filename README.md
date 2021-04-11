@@ -1,16 +1,29 @@
-# mobile
+# :ballot_box_with_check: F-Tasks Frontend
 
-A new Flutter project.
+## Descrição
+Este projeto contém o código do Frontend da aplicação "F-Tasks". O foco deste projeto é muito voltado para a parte de autenticação e autorização.
 
-## Getting Started
+Resumidamente, para usar a ferramenta, o usuário precisa criar um login fornecendo dados como nome, email e senha, e ao entrar com suas credenciais, a aplicação retorna seu nome e um token de acesso. Para acessar recursos protegidos, como a lista de suas tarefas, criação de novas tarefas e atualização do status das mesmas, o usuário precisa fornecer seu token junto à requisição.
 
-This project is a starting point for a Flutter application.
+Além disso, é preciso cuidar da data de expiração do token. Caso esteja expirado, é necessário fazer o processo de refresh do token, onde o backend fornece um novo token válido e o usuário pode utilizá-lo para fazer novamente suas requisições.
 
-A few resources to get you started if this is your first Flutter project:
+## Tecnologias utilizadas na aplicação
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- [Flutter](https://flutter.dev/) - Framework para o desenvolvimento do Frontend da aplicação.
+- [flutter_modular](https://pub.dev/packages/flutter_modular) - Ferramenta capaz de atuar como _service locator_ e capaz de fazer navegação entre telas na aplicação.
+- [dio](https://pub.dev/packages/dio) - Ferramenta altamente customizável para requisições HTTP, com suporte a interceptadores, formulários, downloads, etc.
+- [shared_preferences](https://pub.dev/packages/shared_preferences) - Ferramenta de armazenamento local de dados.
+- [rx_notifier](https://pub.dev/packages/rx_notifier) - Ferramenta de reatividade transparente.
+- [google_fonts](https://pub.dev/packages/google_fonts) - Ferramenta para obtenção das fontes do Google Fonts.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Instalação
+
+```bash
+$ flutter pub get
+```
+
+## Executando a aplicação
+
+```bash
+$ flutter run
+```
